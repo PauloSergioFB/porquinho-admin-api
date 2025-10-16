@@ -35,5 +35,6 @@ app.MapUserEndpoints();
 app.MapFunctionalitiesEndpoints();
 app.MapSubscriptionTierEndpoints();
 app.MapSubscriptionStatusEndpoints();
+app.MapSubscriptionEndpoints();
 
 app.Run();
