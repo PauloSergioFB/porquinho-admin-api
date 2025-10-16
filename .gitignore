@@ -1,0 +1,79 @@
+# Build and compilation
+/bin/
+/obj/
+/out/
+/publish/
+/Debug/
+/Release/
+
+# IDE configurations
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vs/
+*.vscode/settings.json
+*.vscode/launch.json
+*.vscode/tasks.json
+
+# Temporary and cache files
+*.tmp
+*.log
+*.lock
+*.DS_Store
+*.swp
+*.swn
+*.bak
+*.orig
+*.cache
+*.nv
+*.db
+*.pdb
+
+# Local packages and dependencies
+packages/
+.nuget/
+*.nupkg
+*.snupkg
+
+# Credential or key files
+secrets.json
+*.env
+*.key
+*.pem
+*.p12
+*.cer
+
+# Operating system files
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Publications / temporary deploy output
+wwwroot/
+dist/
+build/
+logs/
+coverage/
+test-results/
+*.coverage
+*.coveragexml
+
+# Tools and CI/CD
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.code-workspace
+
+# Linux and macOS
+*.dSYM/
+__pycache__/
+*.pyc
+*.mypy_cache/
+
+# secret env file
+.env

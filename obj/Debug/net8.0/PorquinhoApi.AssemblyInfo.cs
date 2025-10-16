@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PorquinhoApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c9cde142499387455c8a913762b25114d67ec83e")]
 [assembly: System.Reflection.AssemblyProductAttribute("PorquinhoApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PorquinhoApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
