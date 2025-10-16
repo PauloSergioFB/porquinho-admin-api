@@ -16,6 +16,8 @@ public class SubscriptionTierDto
     [Range(0.01, 999999999999.99, ErrorMessage = "Preço inválido.")]
     public decimal Price { get; set; }
 
+    public List<int>? FunctionalityIds { get; set; }
+
     public SubscriptionTier ToEntity()
     {
         return new SubscriptionTier

@@ -24,5 +24,7 @@ public class SubscriptionTier
     [Column("PRICE", TypeName = "NUMBER(14,2)")]
     public decimal Price { get; set; }
 
+    public List<Functionality> Functionalities { get; set; } = [];
+
     public List<Subscription> Subscriptions { get; set; } = [];
 }

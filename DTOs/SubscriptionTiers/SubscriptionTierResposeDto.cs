@@ -1,3 +1,4 @@
+using PorquinhoApi.DTOs.Functionalities;
 using PorquinhoApi.Models;
 
 namespace PorquinhoApi.DTOs.SubscriptionTiers;
@@ -9,6 +10,8 @@ public class SubscriptionTierResponseDto
     public string? Description { get; set; }
     public decimal Price { get; set; }
 
+    public List<FunctionalityResponseDto> Functionalities { get; set; } = [];
+
     public static SubscriptionTierResponseDto FromEntity(SubscriptionTier subscriptionTier)
     {
         return new SubscriptionTierResponseDto
@@ -16,7 +19,10 @@ public class SubscriptionTierResponseDto
             Id = subscriptionTier.Id,
             Name = subscriptionTier.Name,
             Description = subscriptionTier.Description,
-            Price = subscriptionTier.Price
+            Price = subscriptionTier.Price,
+            Functionalities = subscriptionTier.Functionalities?
+                .Select(FunctionalityResponseDto.FromEntity)
+                .ToList() ?? []
         };
     }
 }

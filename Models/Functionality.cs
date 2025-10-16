@@ -20,4 +20,6 @@ public class Functionality
     [MaxLength(20)]
     [Column("CODE")]
     public string Code { get; set; } = string.Empty;
+
+    public List<SubscriptionTier> SubscriptionTiers { get; set; } = [];
 }

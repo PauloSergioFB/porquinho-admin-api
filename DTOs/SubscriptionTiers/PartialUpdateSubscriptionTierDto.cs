@@ -14,6 +14,8 @@ public class PartialUpdateSubscriptionTierDto
     [Range(0.01, 999999999999.99, ErrorMessage = "Preço inválido.")]
     public decimal? Price { get; set; }
 
+    public List<int>? FunctionalityIds { get; set; }
+
     public void ApplyToEntity(SubscriptionTier tier)
     {
         if (Name is not null)

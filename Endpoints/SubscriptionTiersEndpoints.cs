@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using PorquinhoApi.Data;
+using PorquinhoApi.DTOs.Functionalities;
 using PorquinhoApi.DTOs.SubscriptionTiers;
 using PorquinhoApi.Filters;
 using PorquinhoApi.Models;
@@ -50,17 +51,29 @@ public static class SubscriptionTierEndpoints
             .WithDescription("Exclui um nível de subscrição do sistema pelo ID informado")
             .Produces<NoContent>(StatusCodes.Status204NoContent)
             .Produces<NotFound>(StatusCodes.Status404NotFound);
+
+        subscriptionTiers.MapGet("/{id:int}/functionalities", GetAllFunctionalitiesFromSubscriptionTierById)
+            .WithSummary("Lista todas as funcionalidades vinculadas a um nível de subscrição")
+            .WithDescription("Obtém todas as funcionalidades associadas ao nível de subscrição informado pelo ID")
+            .Produces<Ok<List<FunctionalityResponseDto>>>(StatusCodes.Status200OK)
+            .Produces<NotFound>(StatusCodes.Status404NotFound);
     }
 
     static async Task<Ok<List<SubscriptionTierResponseDto>>> GetAllSubscriptionTiers(AppDbContext db)
     {
-        var subscriptionTiers = await db.SubscriptionTiers.ToListAsync();
+        var subscriptionTiers = await db.SubscriptionTiers
+            .Include(t => t.Functionalities)
+            .ToListAsync();
+
         return TypedResults.Ok(subscriptionTiers.Select(SubscriptionTierResponseDto.FromEntity).ToList());
     }
 
     static async Task<Results<Ok<SubscriptionTierResponseDto>, NotFound>> GetSubscriptionTierById(int id, AppDbContext db)
     {
-        var subscriptionTier = await db.SubscriptionTiers.FindAsync(id);
+        var subscriptionTier = await db.SubscriptionTiers
+            .Include(t => t.Functionalities)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
         return subscriptionTier is not null
             ? TypedResults.Ok(SubscriptionTierResponseDto.FromEntity(subscriptionTier))
             : TypedResults.NotFound();
@@ -70,11 +83,24 @@ public static class SubscriptionTierEndpoints
     {
         try
         {
-            SubscriptionTier newSubscriptionTier = dto.ToEntity();
+            var newSubscriptionTier = dto.ToEntity();
+
+            if (dto.FunctionalityIds is not null && dto.FunctionalityIds.Count != 0)
+            {
+                var functionalities = await db.Functionalities
+                    .Where(f => dto.FunctionalityIds.Contains(f.Id))
+                    .ToListAsync();
+
+                newSubscriptionTier.Functionalities = functionalities;
+            }
 
             await db.SubscriptionTiers.AddAsync(newSubscriptionTier);
             await db.SaveChangesAsync();
-            return TypedResults.Created($"/subscriptionTiers/{newSubscriptionTier.Id}", SubscriptionTierResponseDto.FromEntity(newSubscriptionTier));
+
+            return TypedResults.Created(
+                $"/subscription-tiers/{newSubscriptionTier.Id}",
+                SubscriptionTierResponseDto.FromEntity(newSubscriptionTier)
+            );
         }
         catch (Exception ex)
         {
@@ -85,9 +111,21 @@ public static class SubscriptionTierEndpoints
 
     static async Task<Results<NoContent, NotFound>> UpdateSubscriptionTier(int id, SubscriptionTierDto dto, AppDbContext db)
     {
-        var dbSubscriptionTier = await db.SubscriptionTiers.FindAsync(id);
+        var dbSubscriptionTier = await db.SubscriptionTiers
+            .Include(t => t.Functionalities)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
         if (dbSubscriptionTier is null)
             return TypedResults.NotFound();
+
+        if (dto.FunctionalityIds is not null && dto.FunctionalityIds.Count != 0)
+        {
+            var functionalities = await db.Functionalities
+                .Where(f => dto.FunctionalityIds.Contains(f.Id))
+                .ToListAsync();
+
+            dbSubscriptionTier.Functionalities = functionalities;
+        }
 
         SubscriptionTier updatedSubscriptionTier = dto.ToEntity();
 
@@ -101,9 +139,21 @@ public static class SubscriptionTierEndpoints
 
     static async Task<Results<NoContent, NotFound>> PartialUpdateSubscriptionTier(int id, PartialUpdateSubscriptionTierDto dto, AppDbContext db)
     {
-        var dbSubscriptionTier = await db.SubscriptionTiers.FindAsync(id);
+        var dbSubscriptionTier = await db.SubscriptionTiers
+            .Include(t => t.Functionalities)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
         if (dbSubscriptionTier is null)
             return TypedResults.NotFound();
+
+        if (dto.FunctionalityIds is not null && dto.FunctionalityIds.Count != 0)
+        {
+            var functionalities = await db.Functionalities
+                .Where(f => dto.FunctionalityIds.Contains(f.Id))
+                .ToListAsync();
+
+            dbSubscriptionTier.Functionalities = functionalities;
+        }
 
         dto.ApplyToEntity(dbSubscriptionTier);
 
@@ -122,5 +172,21 @@ public static class SubscriptionTierEndpoints
         await db.SaveChangesAsync();
 
         return TypedResults.NoContent();
+    }
+
+    static async Task<Results<Ok<List<FunctionalityResponseDto>>, NotFound>> GetAllFunctionalitiesFromSubscriptionTierById(int id, AppDbContext db)
+    {
+        var subscriptionTier = await db.SubscriptionTiers
+            .Include(t => t.Functionalities)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (subscriptionTier is null)
+            return TypedResults.NotFound();
+
+        var functionalities = subscriptionTier.Functionalities
+            .Select(FunctionalityResponseDto.FromEntity)
+            .ToList();
+
+        return TypedResults.Ok(functionalities);
     }
 }

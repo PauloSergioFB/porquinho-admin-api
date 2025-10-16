@@ -74,7 +74,7 @@ public static class SubscriptionStatusEndpoints
 
             await db.SubscriptionStatuses.AddAsync(newSubscriptionStatus);
             await db.SaveChangesAsync();
-            return TypedResults.Created($"/subscriptionStatuses/{newSubscriptionStatus.Id}", SubscriptionStatusResponseDto.FromEntity(newSubscriptionStatus));
+            return TypedResults.Created($"/subscription-statuses/{newSubscriptionStatus.Id}", SubscriptionStatusResponseDto.FromEntity(newSubscriptionStatus));
         }
         catch (Exception ex)
         {
