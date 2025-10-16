@@ -7,4 +7,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<Functionality> Functionalities => Set<Functionality>();
+    public DbSet<SubscriptionTier> SubscriptionTiers => Set<SubscriptionTier>();
 }
