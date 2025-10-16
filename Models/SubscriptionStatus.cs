@@ -20,4 +20,6 @@ public class SubscriptionStatus
     [MaxLength(20)]
     [Column("CODE")]
     public string Code { get; set; } = string.Empty;
+
+    public List<Subscription> Subscriptions { get; set; } = [];
 }

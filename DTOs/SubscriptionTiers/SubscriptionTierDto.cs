@@ -26,17 +26,6 @@ public class SubscriptionTierDto
         };
     }
 
-    public static SubscriptionTierResponseDto FromEntity(SubscriptionTier tier)
-    {
-        return new SubscriptionTierResponseDto
-        {
-            Id = tier.Id,
-            Name = tier.Name,
-            Description = tier.Description,
-            Price = tier.Price
-        };
-    }
-
     public void ApplyToEntity(SubscriptionTier tier)
     {
         tier.Name = Name;

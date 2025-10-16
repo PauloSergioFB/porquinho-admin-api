@@ -22,16 +22,6 @@ public class SubscriptionStatusDto
         };
     }
 
-    public static SubscriptionStatusResponseDto FromEntity(SubscriptionStatus status)
-    {
-        return new SubscriptionStatusResponseDto
-        {
-            Id = status.Id,
-            Description = status.Description,
-            Code = status.Code
-        };
-    }
-
     public void ApplyToEntity(SubscriptionStatus status)
     {
         status.Description = Description;

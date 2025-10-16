@@ -22,16 +22,6 @@ public class FunctionalityDto
         };
     }
 
-    public static FunctionalityResponseDto FromEntity(Functionality functionality)
-    {
-        return new FunctionalityResponseDto
-        {
-            Id = functionality.Id,
-            Name = functionality.Name,
-            Code = functionality.Code
-        };
-    }
-
     public void ApplyToEntity(Functionality functionality)
     {
         functionality.Name = Name;

@@ -46,25 +46,7 @@ public class UserDto
             Gender = Gender,
             PhoneNumber = PhoneNumber,
             Birthday = Birthday,
-            ProfilePictureUrl = ProfilePictureUrl ?? string.Empty,
-            CreatedAt = DateTime.Now
-        };
-    }
-
-    public static UserResponseDto FromEntity(User user)
-    {
-        return new UserResponseDto
-        {
-            Id = user.Id,
-            FullName = user.FullName,
-            Email = user.Email,
-            Income = user.Income,
-            Gender = user.Gender,
-            PhoneNumber = user.PhoneNumber,
-            Birthday = user.Birthday,
-            ProfilePictureUrl = user.ProfilePictureUrl,
-            CreatedAt = user.CreatedAt,
-            UpdatedAt = user.UpdatedAt
+            ProfilePictureUrl = ProfilePictureUrl
         };
     }
 
@@ -76,7 +58,6 @@ public class UserDto
         user.Gender = Gender;
         user.PhoneNumber = PhoneNumber;
         user.Birthday = Birthday;
-        user.ProfilePictureUrl = ProfilePictureUrl ?? user.ProfilePictureUrl;
-        user.UpdatedAt = DateTime.Now;
+        user.ProfilePictureUrl = ProfilePictureUrl;
     }
 }

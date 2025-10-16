@@ -64,4 +64,5 @@ public class User
 
     // public FinanceObjective? FinanceObjective { get; set; }
 
+    public List<Subscription> Subscriptions { get; set; } = [];
 }
