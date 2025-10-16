@@ -32,5 +32,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapUserEndpoints();
+app.MapFunctionalitiesEndpoints();
 
 app.Run();
