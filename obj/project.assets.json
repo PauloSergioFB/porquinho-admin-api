@@ -5898,11 +5898,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/paulgramador/PorquinhoApi/PorquinhoApi.csproj",
+      "projectUniqueName": "/home/paulgramador/Área de trabalho/PorquinhoApi/PorquinhoApi.csproj",
       "projectName": "PorquinhoApi",
-      "projectPath": "/home/paulgramador/PorquinhoApi/PorquinhoApi.csproj",
+      "projectPath": "/home/paulgramador/Área de trabalho/PorquinhoApi/PorquinhoApi.csproj",
       "packagesPath": "/home/paulgramador/.nuget/packages/",
-      "outputPath": "/home/paulgramador/PorquinhoApi/obj/",
+      "outputPath": "/home/paulgramador/Área de trabalho/PorquinhoApi/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/paulgramador/.nuget/NuGet/NuGet.Config"

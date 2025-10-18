@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ypZ3/wMzdgk=",
+  "dgSpecHash": "v4scqJUfPSc=",
   "success": true,
-  "projectFilePath": "/home/paulgramador/PorquinhoApi/PorquinhoApi.csproj",
+  "projectFilePath": "/home/paulgramador/Área de trabalho/PorquinhoApi/PorquinhoApi.csproj",
   "expectedPackageFiles": [
     "/home/paulgramador/.nuget/packages/dotnetenv/3.1.1/dotnetenv.3.1.1.nupkg.sha512",
     "/home/paulgramador/.nuget/packages/microsoft.aspnetcore.diagnostics.entityframeworkcore/9.0.8/microsoft.aspnetcore.diagnostics.entityframeworkcore.9.0.8.nupkg.sha512",
