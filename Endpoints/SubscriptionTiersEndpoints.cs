@@ -5,10 +5,12 @@ using PorquinhoApi.DTOs.Functionalities;
 using PorquinhoApi.DTOs.SubscriptionTiers;
 using PorquinhoApi.Filters;
 using PorquinhoApi.Models;
+using PorquinhoApi.Services;
+using PorquinhoApi.Utils;
 
 namespace PorquinhoApi.Endpoints;
 
-public static class SubscriptionTierEndpoints
+public static class SubscriptionTiersEndpoints
 {
     public static void MapSubscriptionTierEndpoints(this WebApplication app)
     {
@@ -36,14 +38,14 @@ public static class SubscriptionTierEndpoints
             .WithSummary("Atualiza todos os dados de um nível de subscrição")
             .WithDescription("Substitui todos os campos de um nível de subscrição existente pelo ID")
             .AddEndpointFilter<ValidationFilter<SubscriptionTierDto>>()
-            .Produces<NoContent>(StatusCodes.Status204NoContent)
+            .Produces<Ok<SubscriptionTierResponseDto>>(StatusCodes.Status200OK)
             .Produces<NotFound>(StatusCodes.Status404NotFound);
 
         subscriptionTiers.MapPatch("/{id:int}", PartialUpdateSubscriptionTier)
             .WithSummary("Atualiza parcialmente um nível de subscrição")
             .WithDescription("Modifica apenas os campos enviados no corpo da requisição")
             .AddEndpointFilter<ValidationFilter<PartialUpdateSubscriptionTierDto>>()
-            .Produces<NoContent>(StatusCodes.Status204NoContent)
+            .Produces<Ok<SubscriptionTierResponseDto>>(StatusCodes.Status200OK)
             .Produces<NotFound>(StatusCodes.Status404NotFound);
 
         subscriptionTiers.MapDelete("/{id:int}", DeleteSubscriptionTier)
@@ -55,51 +57,120 @@ public static class SubscriptionTierEndpoints
         subscriptionTiers.MapGet("/{id:int}/functionalities", GetAllFunctionalitiesFromSubscriptionTierById)
             .WithSummary("Lista todas as funcionalidades vinculadas a um nível de subscrição")
             .WithDescription("Obtém todas as funcionalidades associadas ao nível de subscrição informado pelo ID")
-            .Produces<Ok<List<FunctionalityResponseDto>>>(StatusCodes.Status200OK)
+            .Produces<Ok<List<SubscriptionTierResponseDto>>>(StatusCodes.Status200OK)
             .Produces<NotFound>(StatusCodes.Status404NotFound);
+
+        subscriptionTiers.MapGet("/search", SearchSubscriptionTiers)
+            .WithName("SearchSubscriptionTiers")
+            .WithSummary("Busca níveis de subscrição pelo nome")
+            .WithDescription("Realiza uma busca textual nos níveis de subscrição cadastrados.")
+            .Produces<Ok<PagedResponse<SubscriptionTierResponseDto>>>(StatusCodes.Status200OK)
+            .Produces<BadRequest>(StatusCodes.Status400BadRequest);
     }
 
-    static async Task<Ok<List<SubscriptionTierResponseDto>>> GetAllSubscriptionTiers(AppDbContext db)
+    static async Task<Ok<PagedResponse<SubscriptionTierResponseDto>>> GetAllSubscriptionTiers(
+        AppDbContext db,
+        IHateoasLinkService hateoas,
+        HttpContext http,
+        int page = 1,
+        int pageSize = 10)
     {
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 10;
+
+        var totalSubscriptionTiers = await db.SubscriptionTiers.CountAsync();
+
         var subscriptionTiers = await db.SubscriptionTiers
-            .Include(t => t.Functionalities)
+            .OrderBy(f => f.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return TypedResults.Ok(subscriptionTiers.Select(SubscriptionTierResponseDto.FromEntity).ToList());
+        var dtos = subscriptionTiers.Select(SubscriptionTierResponseDto.FromEntity).ToList();
+
+        foreach (var dto in dtos)
+        {
+            hateoas.AddItemLinks(
+                dto,
+                routeNameGetById: "GetSubscriptionTierById",
+                routeValuesForItem: new { id = dto.Id },
+                extras:
+                [
+                    ("get_all_subscriptionTiers", "GET", "GetAllSubscriptionTiers", null),
+                    ("create_subscriptionTier", "POST", "CreateSubscriptionTier", null),
+                    ("update_subscriptionTier", "PUT", "UpdateSubscriptionTier", null),
+                    ("partial_update_subscriptionTier", "PATCH", "PartialUpdateSubscriptionTier", null),
+                    ("delete_subscriptionTier", "DELETE", "DeleteSubscriptionTier", null)
+                ]
+            );
+        }
+
+        var response = PaginationResponseBuilder.Build(
+            items: dtos,
+            page: page,
+            pageSize: pageSize,
+            totalItems: totalSubscriptionTiers,
+            routeBase: "subscriptionTiers",
+            http: http
+        );
+
+        return TypedResults.Ok(response);
     }
 
-    static async Task<Results<Ok<SubscriptionTierResponseDto>, NotFound>> GetSubscriptionTierById(int id, AppDbContext db)
+    static async Task<Results<Ok<SubscriptionTierResponseDto>, NotFound>> GetSubscriptionTierById(int id,
+        AppDbContext db,
+        IHateoasLinkService hateoas)
     {
-        var subscriptionTier = await db.SubscriptionTiers
-            .Include(t => t.Functionalities)
-            .FirstOrDefaultAsync(t => t.Id == id);
+        var subscriptionTier = await db.SubscriptionTiers.FindAsync(id);
+        if (subscriptionTier is null) return TypedResults.NotFound();
 
-        return subscriptionTier is not null
-            ? TypedResults.Ok(SubscriptionTierResponseDto.FromEntity(subscriptionTier))
-            : TypedResults.NotFound();
+        var dto = SubscriptionTierResponseDto.FromEntity(subscriptionTier);
+        hateoas.AddItemLinks(
+            dto,
+            routeNameGetById: "GetSubscriptionTierById",
+            routeValuesForItem: new { id = dto.Id },
+            extras:
+            [
+                ("get_all_subscriptionTiers", "GET", "GetAllSubscriptionTiers", null),
+                ("create_subscriptionTier", "POST", "CreateSubscriptionTier", null),
+                ("update_subscriptionTier", "PUT", "UpdateSubscriptionTier", null),
+                ("partial_update_subscriptionTier", "PATCH", "PartialUpdateSubscriptionTier", null),
+                ("delete_subscriptionTier", "DELETE", "DeleteSubscriptionTier", null)
+            ]
+            );
+
+        return TypedResults.Ok(dto);
     }
 
-    static async Task<Results<Created<SubscriptionTierResponseDto>, BadRequest>> CreateSubscriptionTier(SubscriptionTierDto dto, AppDbContext db)
+    static async Task<Results<Created<SubscriptionTierResponseDto>, BadRequest>> CreateSubscriptionTier(
+        SubscriptionTierDto dto,
+        AppDbContext db,
+        IHateoasLinkService hateoas)
     {
         try
         {
-            var newSubscriptionTier = dto.ToEntity();
-
-            if (dto.FunctionalityIds is not null && dto.FunctionalityIds.Count != 0)
-            {
-                var functionalities = await db.Functionalities
-                    .Where(f => dto.FunctionalityIds.Contains(f.Id))
-                    .ToListAsync();
-
-                newSubscriptionTier.Functionalities = functionalities;
-            }
+            SubscriptionTier newSubscriptionTier = dto.ToEntity();
 
             await db.SubscriptionTiers.AddAsync(newSubscriptionTier);
             await db.SaveChangesAsync();
 
+            var dtoResponse = SubscriptionTierResponseDto.FromEntity(newSubscriptionTier);
+            hateoas.AddItemLinks(
+                dtoResponse,
+                routeNameGetById: "GetSubscriptionTierById",
+                routeValuesForItem: new { id = dtoResponse.Id },
+                extras:
+                [
+                    ("get_all_subscriptionTiers", "GET", "GetAllSubscriptionTiers", null),
+                    ("update_subscriptionTier", "PUT", "UpdateSubscriptionTier", null),
+                    ("partial_update_subscriptionTier", "PATCH", "PartialUpdateSubscriptionTier", null),
+                    ("delete_subscriptionTier", "DELETE", "DeleteSubscriptionTier", null)
+                ]
+            );
+
             return TypedResults.Created(
-                $"/subscription-tiers/{newSubscriptionTier.Id}",
-                SubscriptionTierResponseDto.FromEntity(newSubscriptionTier)
+                $"/subscriptionTiers/{newSubscriptionTier.Id}",
+                dtoResponse
             );
         }
         catch (Exception ex)
@@ -109,60 +180,66 @@ public static class SubscriptionTierEndpoints
         }
     }
 
-    static async Task<Results<NoContent, NotFound>> UpdateSubscriptionTier(int id, SubscriptionTierDto dto, AppDbContext db)
+    static async Task<Results<Ok<SubscriptionTierResponseDto>, NotFound>> UpdateSubscriptionTier(int id,
+        SubscriptionTierDto dto,
+        AppDbContext db,
+        IHateoasLinkService hateoas)
     {
-        var dbSubscriptionTier = await db.SubscriptionTiers
-            .Include(t => t.Functionalities)
-            .FirstOrDefaultAsync(t => t.Id == id);
-
+        var dbSubscriptionTier = await db.SubscriptionTiers.FindAsync(id);
         if (dbSubscriptionTier is null)
             return TypedResults.NotFound();
-
-        if (dto.FunctionalityIds is not null && dto.FunctionalityIds.Count != 0)
-        {
-            var functionalities = await db.Functionalities
-                .Where(f => dto.FunctionalityIds.Contains(f.Id))
-                .ToListAsync();
-
-            dbSubscriptionTier.Functionalities = functionalities;
-        }
-
-        SubscriptionTier updatedSubscriptionTier = dto.ToEntity();
-
-        updatedSubscriptionTier.Id = id;
 
         dto.ApplyToEntity(dbSubscriptionTier);
         await db.SaveChangesAsync();
 
-        return TypedResults.NoContent();
+        var dtoResponse = SubscriptionTierResponseDto.FromEntity(dbSubscriptionTier);
+        hateoas.AddItemLinks(
+            dtoResponse,
+            routeNameGetById: "GetSubscriptionTierById",
+            routeValuesForItem: new { id = dtoResponse.Id },
+            extras:
+            [
+                ("get_all_subscriptionTiers", "GET", "GetAllSubscriptionTiers", null),
+                ("create_subscriptionTier", "POST", "CreateSubscriptionTier", null),
+                ("partial_update_subscriptionTier", "PATCH", "PartialUpdateSubscriptionTier", null),
+                ("delete_subscriptionTier", "DELETE", "DeleteSubscriptionTier", null)
+            ]
+        );
+
+        return TypedResults.Ok(dtoResponse);
     }
 
-    static async Task<Results<NoContent, NotFound>> PartialUpdateSubscriptionTier(int id, PartialUpdateSubscriptionTierDto dto, AppDbContext db)
+    static async Task<Results<Ok<SubscriptionTierResponseDto>, NotFound>> PartialUpdateSubscriptionTier(
+        int id,
+        PartialUpdateSubscriptionTierDto dto,
+        AppDbContext db,
+        IHateoasLinkService hateoas)
     {
-        var dbSubscriptionTier = await db.SubscriptionTiers
-            .Include(t => t.Functionalities)
-            .FirstOrDefaultAsync(t => t.Id == id);
-
+        var dbSubscriptionTier = await db.SubscriptionTiers.FindAsync(id);
         if (dbSubscriptionTier is null)
             return TypedResults.NotFound();
 
-        if (dto.FunctionalityIds is not null && dto.FunctionalityIds.Count != 0)
-        {
-            var functionalities = await db.Functionalities
-                .Where(f => dto.FunctionalityIds.Contains(f.Id))
-                .ToListAsync();
-
-            dbSubscriptionTier.Functionalities = functionalities;
-        }
-
         dto.ApplyToEntity(dbSubscriptionTier);
-
         await db.SaveChangesAsync();
 
-        return TypedResults.NoContent();
+        var dtoResponse = SubscriptionTierResponseDto.FromEntity(dbSubscriptionTier);
+        hateoas.AddItemLinks(
+            dtoResponse,
+            routeNameGetById: "GetSubscriptionTierById",
+            routeValuesForItem: new { id = dtoResponse.Id },
+            extras:
+            [
+                ("get_all_subscriptionTiers", "GET", "GetAllSubscriptionTiers", null),
+                ("create_subscriptionTier", "POST", "CreateSubscriptionTier", null),
+                ("update_subscriptionTier", "PUT", "UpdateSubscriptionTier", null),
+                ("delete_subscriptionTier", "DELETE", "DeleteSubscriptionTier", null)
+            ]
+        );
+
+        return TypedResults.Ok(dtoResponse);
     }
 
-    static async Task<Results<NoContent, NotFound>> DeleteSubscriptionTier(int id, AppDbContext db)
+    static async Task<Results<NoContent, NotFound>> DeleteSubscriptionTier(int id, AppDbContext db, IHateoasLinkService hateoas)
     {
         var subscriptionTier = await db.SubscriptionTiers.FindAsync(id);
         if (subscriptionTier is null)
@@ -188,5 +265,61 @@ public static class SubscriptionTierEndpoints
             .ToList();
 
         return TypedResults.Ok(functionalities);
+    }
+
+    static async Task<Results<Ok<PagedResponse<SubscriptionTierResponseDto>>, BadRequest>> SearchSubscriptionTiers(
+        string? q,
+        AppDbContext db,
+        IHateoasLinkService hateoas,
+        HttpContext http,
+        int page = 1,
+        int pageSize = 10)
+    {
+        if (string.IsNullOrWhiteSpace(q))
+            return TypedResults.BadRequest();
+
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 10;
+
+        var query = db.SubscriptionTiers
+            .Where(f => EF.Functions.Like(f.Name, $"%{q}%"))
+            .OrderBy(f => f.Id);
+
+        var totalSubscriptionTiers = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling(totalSubscriptionTiers / (double)pageSize);
+
+        var subscriptionTiers = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        var dtos = subscriptionTiers.Select(SubscriptionTierResponseDto.FromEntity).ToList();
+
+        foreach (var dto in dtos)
+        {
+            hateoas.AddItemLinks(
+                dto,
+                routeNameGetById: "GetSubscriptionTierById",
+                routeValuesForItem: new { id = dto.Id },
+                extras:
+                [
+                    ("get_all_subscriptionTiers", "GET", "GetAllSubscriptionTiers", null),
+                    ("create_subscriptionTier", "POST", "CreateSubscriptionTier", null),
+                    ("update_subscriptionTier", "PUT", "UpdateSubscriptionTier", null),
+                    ("delete_subscriptionTier", "DELETE", "DeleteSubscriptionTier", null)
+                ]
+            );
+        }
+
+        var response = PaginationResponseBuilder.Build(
+            items: dtos,
+            page: page,
+            pageSize: pageSize,
+            totalItems: totalSubscriptionTiers,
+            routeBase: $"subscriptionTiers/search?q={q}",
+            http: http
+        );
+
+        return TypedResults.Ok(response);
     }
 }

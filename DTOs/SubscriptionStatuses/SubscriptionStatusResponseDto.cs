@@ -1,4 +1,5 @@
 using PorquinhoApi.Models;
+using PorquinhoApi.Models.Hateoas;
 
 namespace PorquinhoApi.DTOs.SubscriptionStatuses;
 
@@ -14,4 +15,6 @@ public record SubscriptionStatusResponseDto(
             subscriptionStatus.Description,
             subscriptionStatus.Code
         );
+
+    public List<Link> Links { get; init; } = [];
 }

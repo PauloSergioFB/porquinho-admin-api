@@ -41,7 +41,7 @@ public static class UsersEndpoints
             .WithSummary("Atualiza todos os dados de um usuário")
             .WithDescription("Substitui todos os campos de um usuário existente pelo ID")
             .AddEndpointFilter<ValidationFilter<UserDto>>()
-            .Produces<Ok<UserResponseDto>>(StatusCodes.Status204NoContent)
+            .Produces<Ok<UserResponseDto>>(StatusCodes.Status200OK)
             .Produces<NotFound>(StatusCodes.Status404NotFound);
 
         users.MapPatch("/{id:int}", PartialUpdateUser)
@@ -49,7 +49,7 @@ public static class UsersEndpoints
             .WithSummary("Atualiza parcialmente um usuário")
             .WithDescription("Modifica apenas os campos enviados no corpo da requisição")
             .AddEndpointFilter<ValidationFilter<PartialUpdateUserDto>>()
-            .Produces<Ok<UserResponseDto>>(StatusCodes.Status204NoContent)
+            .Produces<Ok<UserResponseDto>>(StatusCodes.Status200OK)
             .Produces<NotFound>(StatusCodes.Status404NotFound);
 
         users.MapDelete("/{id:int}", DeleteUser)
@@ -60,7 +60,7 @@ public static class UsersEndpoints
             .Produces<NotFound>(StatusCodes.Status404NotFound);
 
         users.MapGet("/search", SearchUsers)
-            .WithName("SearchFunctionalities")
+            .WithName("SearchUsers")
             .WithSummary("Busca usuários pelo nome")
             .WithDescription("Realiza uma busca textual nos usuários cadastrados.")
             .Produces<Ok<PagedResponse<UserResponseDto>>>(StatusCodes.Status200OK)
@@ -264,9 +264,8 @@ public static class UsersEndpoints
         if (page < 1) page = 1;
         if (pageSize < 1) pageSize = 10;
 
-        _ = int.TryParse(q, out var idValue);
         var query = db.Users
-            .Where(f => f.Id == idValue)
+            .Where(f => EF.Functions.Like(f.FullName, $"%{q}%"))
             .OrderBy(f => f.Id);
 
         var totalUsers = await query.CountAsync();

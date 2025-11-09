@@ -41,7 +41,7 @@ public static class SubscriptionsEndpoints
             .WithSummary("Atualiza todos os dados de uma subscrição")
             .WithDescription("Substitui todos os campos de uma subscrição existente pelo ID")
             .AddEndpointFilter<ValidationFilter<SubscriptionDto>>()
-            .Produces<NoContent>(StatusCodes.Status204NoContent)
+            .Produces<Ok<SubscriptionResponseDto>>(StatusCodes.Status200OK)
             .Produces<NotFound>(StatusCodes.Status404NotFound);
 
         subscriptions.MapPatch("/{id:int}", PartialUpdateSubscription)
@@ -49,7 +49,7 @@ public static class SubscriptionsEndpoints
             .WithSummary("Atualiza parcialmente uma subscrição")
             .WithDescription("Modifica apenas os campos enviados no corpo da requisição")
             .AddEndpointFilter<ValidationFilter<PartialUpdateSubscriptionDto>>()
-            .Produces<NoContent>(StatusCodes.Status204NoContent)
+            .Produces<Ok<SubscriptionResponseDto>>(StatusCodes.Status200OK)
             .Produces<NotFound>(StatusCodes.Status404NotFound);
 
         subscriptions.MapDelete("/{id:int}", DeleteSubscription)
@@ -266,7 +266,7 @@ public static class SubscriptionsEndpoints
 
         _ = int.TryParse(q, out var idValue);
         var query = db.Subscriptions
-            .Where(f => f.Id == idValue)
+            .Where(f => f.UserId == idValue)
             .OrderBy(f => f.Id);
 
         var totalSubscriptions = await query.CountAsync();

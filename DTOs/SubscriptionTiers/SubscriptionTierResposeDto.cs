@@ -1,5 +1,6 @@
 using PorquinhoApi.DTOs.Functionalities;
 using PorquinhoApi.Models;
+using PorquinhoApi.Models.Hateoas;
 
 namespace PorquinhoApi.DTOs.SubscriptionTiers;
 
@@ -21,4 +22,6 @@ public record SubscriptionTierResponseDto(
                 .Select(FunctionalityResponseDto.FromEntity)
                 .ToList() ?? []
         );
+
+    public List<Link> Links { get; init; } = [];
 }
