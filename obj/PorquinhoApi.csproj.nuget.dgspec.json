@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/paulgramador/Área de trabalho/PorquinhoApi/PorquinhoApi.csproj": {}
+    "/home/paulgramador/CodeProjects/Learning/FIAP/2º Ano/Challenge Oracle/Advanced Business Development with .NET/Sprint 02/porquinho-admin-api/PorquinhoApi.csproj": {}
   },
   "projects": {
-    "/home/paulgramador/Área de trabalho/PorquinhoApi/PorquinhoApi.csproj": {
+    "/home/paulgramador/CodeProjects/Learning/FIAP/2º Ano/Challenge Oracle/Advanced Business Development with .NET/Sprint 02/porquinho-admin-api/PorquinhoApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/paulgramador/Área de trabalho/PorquinhoApi/PorquinhoApi.csproj",
+        "projectUniqueName": "/home/paulgramador/CodeProjects/Learning/FIAP/2º Ano/Challenge Oracle/Advanced Business Development with .NET/Sprint 02/porquinho-admin-api/PorquinhoApi.csproj",
         "projectName": "PorquinhoApi",
-        "projectPath": "/home/paulgramador/Área de trabalho/PorquinhoApi/PorquinhoApi.csproj",
+        "projectPath": "/home/paulgramador/CodeProjects/Learning/FIAP/2º Ano/Challenge Oracle/Advanced Business Development with .NET/Sprint 02/porquinho-admin-api/PorquinhoApi.csproj",
         "packagesPath": "/home/paulgramador/.nuget/packages/",
-        "outputPath": "/home/paulgramador/Área de trabalho/PorquinhoApi/obj/",
+        "outputPath": "/home/paulgramador/CodeProjects/Learning/FIAP/2º Ano/Challenge Oracle/Advanced Business Development with .NET/Sprint 02/porquinho-admin-api/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/paulgramador/.nuget/NuGet/NuGet.Config"
@@ -20,6 +20,7 @@
           "net9.0"
         ],
         "sources": {
+          "/usr/lib/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -36,7 +37,7 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         },
         "SdkAnalysisLevel": "9.0.100"
       },
@@ -84,7 +85,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.111/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

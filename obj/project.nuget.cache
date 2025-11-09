@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "v4scqJUfPSc=",
+  "dgSpecHash": "xUN5BGa0qRA=",
   "success": true,
-  "projectFilePath": "/home/paulgramador/Área de trabalho/PorquinhoApi/PorquinhoApi.csproj",
+  "projectFilePath": "/home/paulgramador/CodeProjects/Learning/FIAP/2º Ano/Challenge Oracle/Advanced Business Development with .NET/Sprint 02/porquinho-admin-api/PorquinhoApi.csproj",
   "expectedPackageFiles": [
     "/home/paulgramador/.nuget/packages/dotnetenv/3.1.1/dotnetenv.3.1.1.nupkg.sha512",
     "/home/paulgramador/.nuget/packages/microsoft.aspnetcore.diagnostics.entityframeworkcore/9.0.8/microsoft.aspnetcore.diagnostics.entityframeworkcore.9.0.8.nupkg.sha512",

@@ -1,178 +1,139 @@
-# 🐖 Porquinho – Back Office
+# Porquinho
 
-![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?style=for-the-badge&logo=dotnet)
-![Entity Framework](https://img.shields.io/badge/Entity%20Framework-Core-green?style=for-the-badge&logo=nuget)
-![Oracle](https://img.shields.io/badge/Oracle-Database-red?style=for-the-badge&logo=oracle)
-![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow?style=for-the-badge)
+[![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white)]()
+[![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)]()
+[![FIAP](https://img.shields.io/badge/FIAP-ED145B?style=for-the-badge&logoColor=white)]()
+[![Oracle](https://img.shields.io/badge/Oracle%20Cloud-F80000?style=for-the-badge&logo=oracle&logoColor=white)]()
 
----
+O Porquinho é uma aplicação de controle financeiro pessoal desenvolvida para ajudar usuários a compreenderem seus hábitos financeiros e tomarem decisões mais conscientes sobre suas finanças.
 
-## 💡 Sobre o Projeto
+O app permite o registro e acompanhamento de receitas, despesas e contas, promovendo uma visão clara sobre a situação financeira do usuário.
 
-O **Porquinho** é uma aplicação de **controle financeiro pessoal** voltada para auxiliar usuários a **compreenderem melhor seus hábitos de consumo** e **tomarem decisões mais conscientes** sobre suas finanças.  
-
-O projeto surge da necessidade de oferecer uma alternativa **simples, acessível e orientada por dados**, para quem busca **organizar receitas, despesas e orçamentos** sem depender de ferramentas complexas.
-
-O **Back Office** representa a **API principal** da aplicação, responsável por centralizar o gerenciamento de **usuários, carteiras, contas, categorias, funcionalidades e assinaturas premium**.
+> Este repositório contém os arquivos da API Back Office, desenvolvida com .NET.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
-
-- **C# 9.0**
-- **.NET 9 (Minimal API)**
-- **Entity Framework Core**
-- **Oracle Database**
-- **AutoMapper**
-- **FluentValidation**
-- **Swagger / OpenAPI**
-- **LINQ e Mapeamentos relacionais**
+[Arquitetura de Solução](#arquitetura-de-solução) | [Endpoints Principais](#endpoints-principais) | [Setup do Projeto](#setup-do-projeto) | [Stack Tecnológica](#stack-tecnológica) | [Desenvolvedores](#desenvolvedores)
 
 ---
 
-## 📌 Endpoints Principais
+## Arquitetura de Solução
 
-Abaixo estão listadas as principais rotas organizadas por domínio.  
-Cada recurso segue o padrão RESTful, com suporte a métodos `GET`, `GET /{id}`, `POST`, `PUT`, `PATCH` e `DELETE`.
+![Arquitetura de Solução](./docs/solution-architecture-v2.png)
 
-### 🧍 Usuários (`UserEndpoints.cs`)
+## Endpoints Principais
 
-- `GET /api/v1/users` → Lista todos os usuários  
-- `GET /api/v1/users/{id}` → Retorna um usuário específico  
-- `POST /api/v1/users` → Cadastra um novo usuário  
-- `PUT /api/v1/users/{id}` → Atualiza informações de um usuário  
-- `PATCH /api/v1/users/{id}` → Atualiza parcialmente os dados  
-- `DELETE /api/v1/users/{id}` → Exclui um usuário  
+A seguir estão listados os principais endpoints disponíveis na API Back Office do projeto Porquinho.
 
----
 
-### 💳 Assinaturas (`SubscriptionEndpoints.cs`)
 
-- `GET /api/v1/subscriptions` → Lista todas as assinaturas  
-- `GET /api/v1/subscriptions/{id}` → Retorna uma assinatura específica  
-- `POST /api/v1/subscriptions` → Cria uma nova assinatura  
-- `PUT /api/v1/subscriptions/{id}` → Atualiza informações da assinatura  
-- `PATCH /api/v1/subscriptions/{id}` → Atualiza parcialmente  
-- `DELETE /api/v1/subscriptions/{id}` → Remove uma assinatura  
+### Usuários
 
----
-
-### 🧾 Status de Assinatura (`SubscriptionStatusEndpoints.cs`)
-
-- `GET /api/v1/subscription-status` → Lista os status existentes  
-- `GET /api/v1/subscription-status/{id}` → Retorna um status específico  
-- `POST /api/v1/subscription-status` → Cria um novo status  
-- `PUT /api/v1/subscription-status/{id}` → Atualiza um status existente  
-- `PATCH /api/v1/subscription-status/{id}` → Atualiza parcialmente  
-- `DELETE /api/v1/subscription-status/{id}` → Exclui um status  
-
----
-
-### 🧩 Tiers de Assinatura (`SubscriptionTiersEndpoints.cs`)
-
-- `GET /api/v1/subscription-tiers` → Lista os tiers de assinatura  
-- `GET /api/v1/subscription-tiers/{id}` → Retorna um tier específico  
-- `POST /api/v1/subscription-tiers` → Cria um novo tier  
-- `PUT /api/v1/subscription-tiers/{id}` → Atualiza um tier existente  
-- `PATCH /api/v1/subscription-tiers/{id}` → Atualiza parcialmente  
-- `DELETE /api/v1/subscription-tiers/{id}` → Remove um tier  
-
----
-
-### ⚙️ Funcionalidades (`FunctionalitiesEndpoints.cs`)
-
-- `GET /api/v1/functionalities` → Lista todas as funcionalidades disponíveis  
-- `GET /api/v1/functionalities/{id}` → Retorna uma funcionalidade específica  
-- `POST /api/v1/functionalities` → Cria uma nova funcionalidade  
-- `PUT /api/v1/functionalities/{id}` → Atualiza uma funcionalidade existente  
-- `PATCH /api/v1/functionalities/{id}` → Atualiza parcialmente  
-- `DELETE /api/v1/functionalities/{id}` → Exclui uma funcionalidade  
-
----
-
-## 🧭 Arquitetura da Solução
-
-📄 **Diagrama da Arquitetura:**  
-![Arquitetura da Solução](/docs/solution-architecture.png)
-
----
-
-## 🚀 Como Executar Localmente
-
-Abaixo está o passo a passo completo para configurar e executar o **Porquinho – Back Office** em ambiente local.
-
----
-
-### **1. Pré-requisitos**
-
-Antes de iniciar, garanta que você tenha os seguintes itens instalados:
-
-- [.NET SDK 9.0+](https://dotnet.microsoft.com/download)
-- [Oracle Database XE](https://www.oracle.com/database/technologies/appdev/xe.html) (ou uma instância remota)
-- [Visual Studio Code](https://code.visualstudio.com/), [Visual Studio] ou [JetBrains Rider]
-
----
-
-### **2. Configuração do Ambiente**
-
-Crie um arquivo `.env` na raiz do projeto:
-
-```properties
-ConnectionStrings__OracleConnection=Data Source=oracle.fiap.com.br:1521/orcl;User Id=rm559914;Password=fiap25;
-ASPNETCORE_ENVIRONMENT=Development
+```
+GET    /api/v1/users              Lista todos os usuários  
+GET    /api/v1/users/{id}         Retorna um usuário específico  
+POST   /api/v1/users              Cadastra um novo usuário  
+PUT    /api/v1/users/{id}         Atualiza informações de um usuário  
+PATCH  /api/v1/users/{id}         Atualiza parcialmente os dados  
+DELETE /api/v1/users/{id}         Exclui um usuário  
 ```
 
----
+### Assinaturas
 
-### **3. Clonando o Repositório**
+```
+GET    /api/v1/subscriptions              Lista todas as assinaturas  
+GET    /api/v1/subscriptions/{id}         Retorna uma assinatura específica  
+POST   /api/v1/subscriptions              Cria uma nova assinatura  
+PUT    /api/v1/subscriptions/{id}         Atualiza informações da assinatura  
+PATCH  /api/v1/subscriptions/{id}         Atualiza parcialmente uma assinatura  
+DELETE /api/v1/subscriptions/{id}         Remove uma assinatura  
+```
+
+### Status de Assinatura
+
+```
+GET    /api/v1/subscription-status              Lista os status existentes  
+GET    /api/v1/subscription-status/{id}         Retorna um status específico  
+POST   /api/v1/subscription-status              Cria um novo status  
+PUT    /api/v1/subscription-status/{id}         Atualiza um status existente  
+PATCH  /api/v1/subscription-status/{id}         Atualiza parcialmente um status  
+DELETE /api/v1/subscription-status/{id}         Exclui um status  
+```
+
+### Tiers de Assinatura
+
+```
+GET    /api/v1/subscription-tiers              Lista os tiers de assinatura  
+GET    /api/v1/subscription-tiers/{id}         Retorna um tier específico  
+POST   /api/v1/subscription-tiers              Cria um novo tier  
+PUT    /api/v1/subscription-tiers/{id}         Atualiza um tier existente  
+PATCH  /api/v1/subscription-tiers/{id}         Atualiza parcialmente um tier  
+DELETE /api/v1/subscription-tiers/{id}         Remove um tier  
+```
+
+### Funcionalidades
+
+```
+GET    /api/v1/functionalities              Lista todas as funcionalidades disponíveis  
+GET    /api/v1/functionalities/{id}         Retorna uma funcionalidade específica  
+POST   /api/v1/functionalities              Cria uma nova funcionalidade  
+PUT    /api/v1/functionalities/{id}         Atualiza uma funcionalidade existente  
+PATCH  /api/v1/functionalities/{id}         Atualiza parcialmente uma funcionalidade  
+DELETE /api/v1/functionalities/{id}         Exclui uma funcionalidade  
+```
+
+## Setup do Projeto
+
+### Instalação Local
+
+Antes de iniciar, certifique-se de ter instalado:
+
+- **.NET SDK** (versão 9.0.100 ou superior)
+
+#### 1. Clonar Repositório
 
 ```bash
-git clone https://github.com/seu-usuario/PorquinhoApi.git
+# Clonar o repositório
+git clone https://github.com/PauloSergioFB/porquinho-admin-api.git
+
+# Acessar o diretório
 cd porquinho-admin-api
-```
 
----
-
-### **4. Restaurando Dependências**
-
-```bash
+# Instalar as dependências
 dotnet restore
 ```
 
----
+#### 2. Configurar o Ambiente
 
-### **5. Executando o Projeto**
+Crie um arquivo .env na raiz do projeto com o seguinte conteúdo (substitua pelos seus próprios dados de conexão, usuário e senha):
 
-#### Rodar diretamente via CLI
 ```bash
+ConnectionStrings__OracleConnection=Data Source=oracle.fiap.com.br:1521/orcl;User Id=<seu_usuario>;Password=<sua_senha>;
+ASPNETCORE_ENVIRONMENT=Development
+```
+
+#### 3. Iniciar o projeto
+
+```
 dotnet run
 ```
 
----
+Após a inicialização, a API estará disponível em: http://localhost:5070  
+A documentação interativa (Swagger UI) pode ser acessada em: http://localhost:5070/scalar
 
-### **6. Acessando a Documentação Interativa**
+## Stack Tecnológica
 
-Após iniciar o servidor, acesse o Swagger UI:
+O projeto utiliza as seguintes tecnologias:
 
-> **[http://localhost:5070/scalar](http://localhost:5070/scalar)**
+- C# 12 - Linguagem principal utilizada na API.
+- .NET 9 - Framework base para construção da aplicação com alto desempenho e suporte multiplataforma.
+- Entity Framework Core - ORM utilizado para persistência e mapeamento objeto-relacional.
+- Data Annotations - Mapeamento de entidades e validação de dados através de atributos.
+- Minimal API - Abordagem leve e direta para definição dos endpoints HTTP.
+- Swagger / OpenAPI - Ferramenta para documentação e teste interativo dos endpoints da API.
 
----
+## Desenvolvedores
 
-## 📐 Especificações Técnicas
-
-- Arquitetura modular com separação em **Data**, **DTOs**, **Endpoints**, **Models**, **Services** e **Filters**  
-- Padrão **Repository/Service** com injeção de dependência  
-- Persistência via **Entity Framework Core (Code First)**  
-- Mapeamento entre entidades e DTOs com **AutoMapper**  
-- Validação de entrada via **FluentValidation**  
-- Documentação automatizada com **Swagger UI**  
-
----
-
-## 👥 Contribuidores
-
-| Nome | GitHub | Função |
-|------|---------|--------|
-| **Antonio de Luca** | [@AntonioDeLuca](https://github.com/Antoniodluca-ads) | Desenvolvimento Backend |
-| **Enzo Azevedo** | [@EnzoAzevedo](https://github.com/enzorva) | Desenvolvimento Backend |
-| **Paulo Barbosa** | [@PauloSergioFB](https://github.com/PauloSergioFB) | Desenvolvimento Backend e Documentação |
+[@AntonioDeLuca](https://github.com/antoniodeluca) - Desenvolvedor Backend  
+[@EnzoAzevedo](https://github.com/enzoazevedo) - Desenvolvedor Backend  
+[@PauloSérgioFB](https://github.com/paulgramador) - Desenvolvedor Mobile
