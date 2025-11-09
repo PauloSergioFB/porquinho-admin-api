@@ -1,4 +1,5 @@
 using PorquinhoApi.Models;
+using PorquinhoApi.Models.Hateoas;
 
 namespace PorquinhoApi.DTOs.Users;
 
@@ -28,4 +29,6 @@ public record UserResponseDto(
             user.CreatedAt,
             user.UpdatedAt
         );
+
+    public List<Link> Links { get; init; } = [];
 }
