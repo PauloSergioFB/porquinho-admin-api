@@ -19,6 +19,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.RegisterDatabaseService(builder.Configuration);
 builder.Services.AddOpenApi();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IHateoasLinkService, HateoasLinkService>();
+
 var app = builder.Build();
 
 app.MapOpenApi();

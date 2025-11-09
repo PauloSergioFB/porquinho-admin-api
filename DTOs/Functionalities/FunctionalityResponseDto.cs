@@ -1,4 +1,5 @@
 using PorquinhoApi.Models;
+using PorquinhoApi.Models.Hateoas;
 
 namespace PorquinhoApi.DTOs.Functionalities;
 
@@ -14,4 +15,6 @@ public record FunctionalityResponseDto(
             functionality.Name,
             functionality.Code
         );
+
+    public List<Link> Links { get; init; } = [];
 }
