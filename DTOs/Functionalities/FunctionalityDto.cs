@@ -3,24 +3,21 @@ using PorquinhoApi.Models;
 
 namespace PorquinhoApi.DTOs.Functionalities;
 
-public class FunctionalityDto
+public record FunctionalityDto(
+    [property: Required(ErrorMessage = "O nome é obrigatório.")]
+    [property: MaxLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres.")]
+    string Name,
+
+    [property: Required(ErrorMessage = "O código é obrigatório.")]
+    [property: MaxLength(20, ErrorMessage = "O código deve ter no máximo 20 caracteres.")]
+    string Code
+)
 {
-    [Required(ErrorMessage = "O nome é obrigatório.")]
-    [MaxLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres.")]
-    public string Name { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "O código é obrigatório.")]
-    [MaxLength(20, ErrorMessage = "O código deve ter no máximo 20 caracteres.")]
-    public string Code { get; set; } = string.Empty;
-
-    public Functionality ToEntity()
+    public Functionality ToEntity() => new()
     {
-        return new Functionality
-        {
-            Name = Name,
-            Code = Code
-        };
-    }
+        Name = Name,
+        Code = Code
+    };
 
     public void ApplyToEntity(Functionality functionality)
     {

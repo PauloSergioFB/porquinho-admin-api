@@ -2,14 +2,14 @@ using PorquinhoApi.Models;
 
 namespace PorquinhoApi.DTOs.Subscriptions;
 
-public class PartialUpdateSubscriptionDto
+public record PartialUpdateSubscriptionDto(
+    int? UserId,
+    int? SubscriptionTierId,
+    int? SubscriptionStatusId,
+    DateTime? StartDate,
+    DateTime? EndDate
+)
 {
-    public int? UserId { get; set; }
-    public int? SubscriptionTierId { get; set; }
-    public int? SubscriptionStatusId { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-
     public void ApplyToEntity(Subscription subscription)
     {
         if (UserId is not null)

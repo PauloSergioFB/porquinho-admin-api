@@ -3,52 +3,49 @@ using PorquinhoApi.Models;
 
 namespace PorquinhoApi.DTOs.Users;
 
-public class UserDto
+public record UserDto(
+    [property: Required(ErrorMessage = "O nome completo é obrigatório.")]
+    [property: MaxLength(200, ErrorMessage = "O nome deve ter no máximo 200 caracteres.")]
+    string FullName,
+
+    [property: Required(ErrorMessage = "O e-mail é obrigatório.")]
+    [property: EmailAddress(ErrorMessage = "E-mail inválido.")]
+    [property: MaxLength(255)]
+    string Email,
+
+    [property: Required(ErrorMessage = "A senha é obrigatória.")]
+    [property: MinLength(8, ErrorMessage = "A senha deve ter pelo menos 8 caracteres.")]
+    [property: MaxLength(255)]
+    string Password,
+
+    [property: Range(0, 999999999999.99, ErrorMessage = "Renda inválida.")]
+    decimal? Income,
+
+    [property: RegularExpression("masculine|feminine|other", ErrorMessage = "Gênero deve ser masculine, feminine ou other.")]
+    string? Gender,
+
+    [property: Range(10000000000, 999999999999, ErrorMessage = "Número de telefone inválido.")]
+    long? PhoneNumber,
+
+    DateTime? Birthday,
+
+    [property: Required(ErrorMessage = "A URL da foto de perfil é obrigatória.")]
+    [property: Url(ErrorMessage = "A URL da foto de perfil é inválida.")]
+    [property: MaxLength(255)]
+    string ProfilePictureUrl
+)
 {
-    [Required(ErrorMessage = "O nome completo é obrigatório.")]
-    [MaxLength(200, ErrorMessage = "O nome deve ter no máximo 200 caracteres.")]
-    public string FullName { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "O e-mail é obrigatório.")]
-    [EmailAddress(ErrorMessage = "E-mail inválido.")]
-    [MaxLength(255)]
-    public string Email { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "A senha é obrigatória.")]
-    [MinLength(8, ErrorMessage = "A senha deve ter pelo menos 8 caracteres.")]
-    [MaxLength(255)]
-    public string Password { get; set; } = string.Empty;
-
-    [Range(0, 999999999999.99, ErrorMessage = "Renda inválida.")]
-    public decimal? Income { get; set; }
-
-    [RegularExpression("masculine|feminine|other", ErrorMessage = "Gênero deve ser masculine, feminine ou other.")]
-    public string? Gender { get; set; }
-
-    [Range(10000000000, 999999999999, ErrorMessage = "Número de telefone inválido.")]
-    public long? PhoneNumber { get; set; }
-
-    public DateTime? Birthday { get; set; }
-
-    [Required(ErrorMessage = "A URL da foto de perfil é obrigatória.")]
-    [Url(ErrorMessage = "A URL da foto de perfil é inválida.")]
-    [MaxLength(255)]
-    public string ProfilePictureUrl { get; set; } = string.Empty;
-
-    public User ToEntity()
+    public User ToEntity() => new()
     {
-        return new User
-        {
-            FullName = FullName,
-            Email = Email,
-            HashedPassword = Password,
-            Income = Income,
-            Gender = Gender,
-            PhoneNumber = PhoneNumber,
-            Birthday = Birthday,
-            ProfilePictureUrl = ProfilePictureUrl
-        };
-    }
+        FullName = FullName,
+        Email = Email,
+        HashedPassword = Password,
+        Income = Income,
+        Gender = Gender,
+        PhoneNumber = PhoneNumber,
+        Birthday = Birthday,
+        ProfilePictureUrl = ProfilePictureUrl
+    };
 
     public void ApplyToEntity(User user)
     {

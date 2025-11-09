@@ -3,30 +3,27 @@ using PorquinhoApi.Models;
 
 namespace PorquinhoApi.DTOs.SubscriptionTiers;
 
-public class SubscriptionTierDto
+public record SubscriptionTierDto(
+    [property: Required(ErrorMessage = "O nome é obrigatório.")]
+    [property: MaxLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres.")]
+    string Name,
+
+    [property: MaxLength(255, ErrorMessage = "A descrição deve ter no máximo 255 caracteres.")]
+    string? Description,
+
+    [property: Required(ErrorMessage = "O preço é obrigatório.")]
+    [property: Range(0.01, 999999999999.99, ErrorMessage = "Preço inválido.")]
+    decimal Price,
+
+    List<int>? FunctionalityIds
+)
 {
-    [Required(ErrorMessage = "O nome é obrigatório.")]
-    [MaxLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres.")]
-    public string Name { get; set; } = string.Empty;
-
-    [MaxLength(255, ErrorMessage = "A descrição deve ter no máximo 255 caracteres.")]
-    public string? Description { get; set; }
-
-    [Required(ErrorMessage = "O preço é obrigatório.")]
-    [Range(0.01, 999999999999.99, ErrorMessage = "Preço inválido.")]
-    public decimal Price { get; set; }
-
-    public List<int>? FunctionalityIds { get; set; }
-
-    public SubscriptionTier ToEntity()
+    public SubscriptionTier ToEntity() => new()
     {
-        return new SubscriptionTier
-        {
-            Name = Name,
-            Description = Description,
-            Price = Price
-        };
-    }
+        Name = Name,
+        Description = Description,
+        Price = Price
+    };
 
     public void ApplyToEntity(SubscriptionTier tier)
     {

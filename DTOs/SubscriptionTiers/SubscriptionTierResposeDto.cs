@@ -3,26 +3,22 @@ using PorquinhoApi.Models;
 
 namespace PorquinhoApi.DTOs.SubscriptionTiers;
 
-public class SubscriptionTierResponseDto
+public record SubscriptionTierResponseDto(
+    int Id,
+    string Name,
+    string? Description,
+    decimal Price,
+    List<FunctionalityResponseDto> Functionalities
+)
 {
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
-    public decimal Price { get; set; }
-
-    public List<FunctionalityResponseDto> Functionalities { get; set; } = [];
-
-    public static SubscriptionTierResponseDto FromEntity(SubscriptionTier subscriptionTier)
-    {
-        return new SubscriptionTierResponseDto
-        {
-            Id = subscriptionTier.Id,
-            Name = subscriptionTier.Name,
-            Description = subscriptionTier.Description,
-            Price = subscriptionTier.Price,
-            Functionalities = subscriptionTier.Functionalities?
+    public static SubscriptionTierResponseDto FromEntity(SubscriptionTier subscriptionTier) =>
+        new(
+            subscriptionTier.Id,
+            subscriptionTier.Name,
+            subscriptionTier.Description,
+            subscriptionTier.Price,
+            subscriptionTier.Functionalities?
                 .Select(FunctionalityResponseDto.FromEntity)
                 .ToList() ?? []
-        };
-    }
+        );
 }

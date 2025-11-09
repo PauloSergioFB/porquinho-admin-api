@@ -3,34 +3,34 @@ using PorquinhoApi.Models;
 
 namespace PorquinhoApi.DTOs.Users;
 
-public class PartialUpdateUserDto
+public record PartialUpdateUserDto(
+    [property: MaxLength(200, ErrorMessage = "O nome deve ter no máximo 200 caracteres.")]
+    string? FullName,
+
+    [property: EmailAddress(ErrorMessage = "E-mail inválido.")]
+    [property: MaxLength(255)]
+    string? Email,
+
+    [property: MinLength(8, ErrorMessage = "A senha deve ter pelo menos 8 caracteres.")]
+    [property: MaxLength(255)]
+    string? Password,
+
+    [property: Range(0, 999999999999.99, ErrorMessage = "Renda inválida.")]
+    decimal? Income,
+
+    [property: RegularExpression("masculine|feminine|other", ErrorMessage = "Gênero deve ser masculine, feminine ou other.")]
+    string? Gender,
+
+    [property: Range(10000000000, 999999999999, ErrorMessage = "Número de telefone inválido.")]
+    long? PhoneNumber,
+
+    DateTime? Birthday,
+
+    [property: Url(ErrorMessage = "A URL da foto de perfil é inválida.")]
+    [property: MaxLength(255)]
+    string? ProfilePictureUrl
+)
 {
-    [MaxLength(200, ErrorMessage = "O nome deve ter no máximo 200 caracteres.")]
-    public string? FullName { get; set; }
-
-    [EmailAddress(ErrorMessage = "E-mail inválido.")]
-    [MaxLength(255)]
-    public string? Email { get; set; }
-
-    [MinLength(8, ErrorMessage = "A senha deve ter pelo menos 8 caracteres.")]
-    [MaxLength(255)]
-    public string? Password { get; set; }
-
-    [Range(0, 999999999999.99, ErrorMessage = "Renda inválida.")]
-    public decimal? Income { get; set; }
-
-    [RegularExpression("masculine|feminine|other", ErrorMessage = "Gênero deve ser masculine, feminine ou other.")]
-    public string? Gender { get; set; }
-
-    [Range(10000000000, 999999999999, ErrorMessage = "Número de telefone inválido.")]
-    public long? PhoneNumber { get; set; }
-
-    public DateTime? Birthday { get; set; }
-
-    [Url(ErrorMessage = "A URL da foto de perfil é inválida.")]
-    [MaxLength(255)]
-    public string? ProfilePictureUrl { get; set; }
-
     public void ApplyToEntity(User user)
     {
         if (FullName is not null)

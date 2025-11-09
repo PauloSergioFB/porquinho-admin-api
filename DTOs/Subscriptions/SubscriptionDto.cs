@@ -3,26 +3,23 @@ using PorquinhoApi.Models;
 
 namespace PorquinhoApi.DTOs.Subscriptions;
 
-public class SubscriptionDto
+public record SubscriptionDto(
+    [property: Required(ErrorMessage = "O ID do usuário é obrigatório.")]
+    int UserId,
+
+    [property: Required(ErrorMessage = "O ID do plano de assinatura é obrigatório.")]
+    int SubscriptionTierId,
+
+    [property: Required(ErrorMessage = "O ID do status da assinatura é obrigatório.")]
+    int SubscriptionStatusId
+)
 {
-    [Required(ErrorMessage = "O ID do usuário é obrigatório.")]
-    public int UserId { get; set; }
-
-    [Required(ErrorMessage = "O ID do plano de assinatura é obrigatório.")]
-    public int SubscriptionTierId { get; set; }
-
-    [Required(ErrorMessage = "O ID do status da assinatura é obrigatório.")]
-    public int SubscriptionStatusId { get; set; }
-
-    public Subscription ToEntity()
+    public Subscription ToEntity() => new()
     {
-        return new Subscription
-        {
-            UserId = UserId,
-            SubscriptionTierId = SubscriptionTierId,
-            SubscriptionStatusId = SubscriptionStatusId
-        };
-    }
+        UserId = UserId,
+        SubscriptionTierId = SubscriptionTierId,
+        SubscriptionStatusId = SubscriptionStatusId
+    };
 
     public void ApplyToEntity(Subscription subscription)
     {
