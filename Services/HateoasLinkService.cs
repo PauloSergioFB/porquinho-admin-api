@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Routing;
 using PorquinhoApi.Models.Hateoas;
 
 namespace PorquinhoApi.Services;

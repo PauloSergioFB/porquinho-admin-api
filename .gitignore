@@ -1,10 +1,10 @@
 # Build and compilation
-/bin/
-/obj/
-/out/
-/publish/
-/Debug/
-/Release/
+**/bin/
+**/obj/
+**/out/
+**/publish/
+**/Debug/
+**/Release/
 
 # IDE configurations
 .vscode/

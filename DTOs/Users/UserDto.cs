@@ -29,7 +29,6 @@ public record UserDto(
 
     DateTime? Birthday,
 
-    [property: Required(ErrorMessage = "A URL da foto de perfil é obrigatória.")]
     [property: Url(ErrorMessage = "A URL da foto de perfil é inválida.")]
     [property: MaxLength(255)]
     string ProfilePictureUrl

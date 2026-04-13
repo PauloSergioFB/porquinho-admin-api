@@ -40,10 +40,9 @@ public class User
     [Column("BIRTHDAY", TypeName = "DATE")]
     public DateTime? Birthday { get; set; }
 
-    [Required]
     [Column("PROFILE_PICTURE_URL")]
     [MaxLength(255)]
-    public string ProfilePictureUrl { get; set; } = string.Empty;
+    public string? ProfilePictureUrl { get; set; } = string.Empty;
 
     [Required]
     [Column("CREATED_AT", TypeName = "TIMESTAMP")]

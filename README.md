@@ -25,7 +25,12 @@ O app permite o registro e acompanhamento de receitas, despesas e contas, promov
 
 A seguir estão listados os principais endpoints disponíveis na API Back Office do projeto Porquinho.
 
+### Health
 
+```
+GET    /health            Verifica se a aplicação está rodando corretamente
+GET    /health/database   Verifica a conectividade com o banco de dados
+```
 
 ### Usuários
 
@@ -120,6 +125,15 @@ dotnet run
 
 Após a inicialização, a API estará disponível em: http://localhost:5070  
 A documentação interativa (Swagger UI) pode ser acessada em: http://localhost:5070/scalar
+
+### 4. Execução de Testes
+
+Para rodar todos os testes automatizados do projeto:
+
+``` bash
+dotnet test
+```
+
 
 ## Stack Tecnológica
 

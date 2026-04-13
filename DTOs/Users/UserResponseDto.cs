@@ -11,7 +11,7 @@ public record UserResponseDto(
     string? Gender,
     long? PhoneNumber,
     DateTime? Birthday,
-    string ProfilePictureUrl,
+    string? ProfilePictureUrl,
     DateTime CreatedAt,
     DateTime? UpdatedAt
 )
