@@ -13,7 +13,7 @@ public static class SubscriptionsEndpoints
 {
     public static void MapSubscriptionEndpoints(this WebApplication app)
     {
-        var subscriptions = app.MapGroup("/subscriptions").WithTags("Subscriptions");
+        var subscriptions = app.MapGroup("/subscriptions").WithTags("Subscriptions").RequireAuthorization();
 
         subscriptions.MapGet("/", GetAllSubscriptions)
             .WithName("GetAllSubscriptions")

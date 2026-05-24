@@ -11,8 +11,17 @@ using Serilog;
 using Serilog.Context;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using PorquinhoApi.Models;
 
 Env.Load();
+
+var builder = WebApplication.CreateBuilder(args);
+
+var mongoUrl = builder.Configuration["MongoDb:ConnectionString"];
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -22,11 +31,15 @@ Log.Logger = new LoggerConfiguration()
         "logs/application-.log",
         rollingInterval: RollingInterval.Day
     )
+    .WriteTo.MongoDB(
+        databaseUrl: mongoUrl!,
+        collectionName: "api_logs"
+    )
     .CreateLogger();
 
-var builder = WebApplication.CreateBuilder(args);
-
 builder.Host.UseSerilog();
+
+builder.Services.AddSingleton<ApiLogService>();
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -40,6 +53,8 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IHateoasLinkService, HateoasLinkService>();
+
+builder.Services.AddSingleton<ImportedTransactionService>();
 
 var connectionString = builder.Configuration.GetConnectionString("OracleConnection");
 
@@ -70,6 +85,37 @@ builder.Services.AddOpenTelemetry()
             .AddRuntimeInstrumentation()
             .AddConsoleExporter();
     });
+
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var key = builder.Configuration["Jwt:Key"]!;
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(key)
+            ),
+
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<JwtTokenService>();
 
 var app = builder.Build();
 
@@ -105,6 +151,11 @@ app.UseSerilogRequestLogging(options =>
     };
 });
 
+app.MapApiLogEndpoints();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapOpenApi();
 
 if (app.Environment.IsDevelopment())
@@ -115,6 +166,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.MapAuthEndpoints();
+
 app.MapHealthChecks("/health");
 
 app.MapHealthChecks("/health/database", new HealthCheckOptions
@@ -122,12 +175,12 @@ app.MapHealthChecks("/health/database", new HealthCheckOptions
     Predicate = check => check.Tags.Contains("db"),
 });
 
-
 app.MapUserEndpoints();
 app.MapFunctionalitiesEndpoints();
 app.MapSubscriptionTierEndpoints();
 app.MapSubscriptionStatusEndpoints();
 app.MapSubscriptionEndpoints();
+app.MapImportedTransactionEndpoints();
 
 app.Run();
 

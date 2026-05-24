@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<SubscriptionTier> SubscriptionTiers => Set<SubscriptionTier>();
     public DbSet<SubscriptionStatus> SubscriptionStatuses => Set<SubscriptionStatus>();
     public DbSet<Subscription> Subscriptions => Set<Subscription>();
+    public DbSet<Transaction> Transactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

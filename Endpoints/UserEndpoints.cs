@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PorquinhoApi.Data;
 using PorquinhoApi.DTOs.Users;
@@ -16,12 +17,14 @@ public static class UsersEndpoints
         var users = app.MapGroup("/users").WithTags("Users");
 
         users.MapGet("/", GetAllUsers)
+            .RequireAuthorization()
             .WithName("GetAllUsers")
             .WithSummary("Retorna todos os usuários cadastrados")
             .WithDescription("Obtém uma lista completa de usuários do sistema")
             .Produces<Ok<PagedResponse<UserResponseDto>>>(StatusCodes.Status200OK);
 
         users.MapGet("/{id:int}", GetUserById)
+            .RequireAuthorization()
             .WithName("GetUserById")
             .WithSummary("Retorna um usuário específico")
             .WithDescription("Obtém um usuário pelo ID informado")
@@ -37,6 +40,7 @@ public static class UsersEndpoints
             .Produces<BadRequest>(StatusCodes.Status400BadRequest);
 
         users.MapPut("/{id:int}", UpdateUser)
+            .RequireAuthorization()
             .WithName("UpdateUser")
             .WithSummary("Atualiza todos os dados de um usuário")
             .WithDescription("Substitui todos os campos de um usuário existente pelo ID")
@@ -45,6 +49,7 @@ public static class UsersEndpoints
             .Produces<NotFound>(StatusCodes.Status404NotFound);
 
         users.MapPatch("/{id:int}", PartialUpdateUser)
+            .RequireAuthorization()
             .WithName("PartialUpdateUser")
             .WithSummary("Atualiza parcialmente um usuário")
             .WithDescription("Modifica apenas os campos enviados no corpo da requisição")
@@ -53,6 +58,7 @@ public static class UsersEndpoints
             .Produces<NotFound>(StatusCodes.Status404NotFound);
 
         users.MapDelete("/{id:int}", DeleteUser)
+            .RequireAuthorization()
             .WithName("DeleteUser")
             .WithSummary("Remove um usuário")
             .WithDescription("Exclui um usuário do sistema pelo ID informado")
@@ -60,6 +66,7 @@ public static class UsersEndpoints
             .Produces<NotFound>(StatusCodes.Status404NotFound);
 
         users.MapGet("/search", SearchUsers)
+            .RequireAuthorization()
             .WithName("SearchUsers")
             .WithSummary("Busca usuários pelo nome")
             .WithDescription("Realiza uma busca textual nos usuários cadastrados.")
@@ -144,11 +151,13 @@ public static class UsersEndpoints
     static async Task<Results<Created<UserResponseDto>, BadRequest>> CreateUser(
         UserDto dto,
         AppDbContext db,
-        IHateoasLinkService hateoas)
+        IHateoasLinkService hateoas,
+        IPasswordHasher<User> passwordHasher)
     {
         try
         {
             User newUser = dto.ToEntity();
+            newUser.HashedPassword = passwordHasher.HashPassword(newUser, dto.Password);
 
             await db.Users.AddAsync(newUser);
             await db.SaveChangesAsync();
@@ -179,16 +188,21 @@ public static class UsersEndpoints
         }
     }
 
-    static async Task<Results<Ok<UserResponseDto>, NotFound>> UpdateUser(int id,
+    static async Task<Results<Ok<UserResponseDto>, NotFound>> UpdateUser(
+        int id,
         UserDto dto,
         AppDbContext db,
-        IHateoasLinkService hateoas)
+        IHateoasLinkService hateoas,
+        IPasswordHasher<User> passwordHasher)
     {
         var dbUser = await db.Users.FindAsync(id);
         if (dbUser is null)
             return TypedResults.NotFound();
 
         dto.ApplyToEntity(dbUser);
+        dbUser.HashedPassword = passwordHasher.HashPassword(dbUser, dto.Password);
+        dbUser.UpdatedAt = DateTime.Now;
+
         await db.SaveChangesAsync();
 
         var dtoResponse = UserResponseDto.FromEntity(dbUser);
@@ -212,13 +226,22 @@ public static class UsersEndpoints
         int id,
         PartialUpdateUserDto dto,
         AppDbContext db,
-        IHateoasLinkService hateoas)
+        IHateoasLinkService hateoas,
+        IPasswordHasher<User> passwordHasher)
     {
         var dbUser = await db.Users.FindAsync(id);
         if (dbUser is null)
             return TypedResults.NotFound();
 
         dto.ApplyToEntity(dbUser);
+
+        if (!string.IsNullOrWhiteSpace(dto.Password))
+        {
+            dbUser.HashedPassword = passwordHasher.HashPassword(dbUser, dto.Password);
+        }
+
+        dbUser.UpdatedAt = DateTime.Now;
+
         await db.SaveChangesAsync();
 
         var dtoResponse = UserResponseDto.FromEntity(dbUser);

@@ -25,6 +25,26 @@ O app permite o registro e acompanhamento de receitas, despesas e contas, promov
 
 A seguir estão listados os principais endpoints disponíveis na API Back Office do projeto Porquinho.
 
+## Autenticação
+
+Para acessar os endpoints protegidos, é necessário autenticar-se na API e enviar o token JWT no cabeçalho das requisições.
+
+```
+Authorization: Bearer <seu_token_jwt>
+```
+
+O token JWT pode ser obtido através do endpoint de login:
+
+```
+POST /auth/login  
+{
+    "email": <email_cadastrado>,
+    "senha": <senha_cadastrada>
+}
+```
+
+Após autenticar-se com sucesso, a API retornará um token que deverá ser enviado em todas as requisições protegidas.
+
 ### Health
 
 ```
@@ -35,15 +55,15 @@ GET    /health/database   Verifica a conectividade com o banco de dados
 ### Usuários
 
 ```
-GET    /api/v1/users              Lista todos os usuários  
-GET    /api/v1/users/{id}         Retorna um usuário específico  
+GET    /api/v1/users              Lista todos os usuários [PROTEGIDO]  
+GET    /api/v1/users/{id}         Retorna um usuário específico [PROTEGIDO]  
 POST   /api/v1/users              Cadastra um novo usuário  
-PUT    /api/v1/users/{id}         Atualiza informações de um usuário  
-PATCH  /api/v1/users/{id}         Atualiza parcialmente os dados  
-DELETE /api/v1/users/{id}         Exclui um usuário  
+PUT    /api/v1/users/{id}         Atualiza informações de um usuário [PROTEGIDO]  
+PATCH  /api/v1/users/{id}         Atualiza parcialmente os dados [PROTEGIDO]  
+DELETE /api/v1/users/{id}         Exclui um usuário [PROTEGIDO]  
 ```
 
-### Assinaturas
+### Assinaturas [PROTEGIDO]
 
 ```
 GET    /api/v1/subscriptions              Lista todas as assinaturas  
@@ -87,6 +107,29 @@ PATCH  /api/v1/functionalities/{id}         Atualiza parcialmente uma funcionali
 DELETE /api/v1/functionalities/{id}         Exclui uma funcionalidade  
 ```
 
+### Transações (NoSQL) [PROTEGIDO]
+
+```
+GET    /api/v1/transactions                Lista todas as transações registradas
+GET    /api/v1/transactions/{id}           Retorna os dados de uma transação específica
+POST   /api/v1/transactions                Registra uma nova transação
+PUT    /api/v1/transactions/{id}           Atualiza completamente uma transação existente
+PATCH  /api/v1/transactions/{id}           Atualiza parcialmente os dados de uma transação
+DELETE /api/v1/transactions/{id}           Remove uma transação do sistema
+POST   /api/v1/transactions/import         Importa as transações do banco de dados relacional para o NoSQL
+```
+
+### Logs (NoSQL) [PROTEGIDO]
+
+```
+GET    /api/v1/logs              Lista todos os logs registrados pela aplicação
+GET    /api/v1/logs/{id}         Retorna os dados de um log específico
+POST   /api/v1/logs              Cria um novo registro de log
+PUT    /api/v1/logs/{id}         Atualiza completamente um log existente
+PATCH  /api/v1/logs/{id}         Atualiza parcialmente os dados de um log
+DELETE /api/v1/logs/{id}         Remove um log
+```
+
 ## Setup do Projeto
 
 ### Instalação Local
@@ -94,6 +137,8 @@ DELETE /api/v1/functionalities/{id}         Exclui uma funcionalidade
 Antes de iniciar, certifique-se de ter instalado:
 
 - **.NET SDK** (versão 9.0.100 ou superior)
+- **Docker**
+- **Docker Compose**
 
 #### 1. Clonar Repositório
 
@@ -117,7 +162,15 @@ ConnectionStrings__OracleConnection=Data Source=oracle.fiap.com.br:1521/orcl;Use
 ASPNETCORE_ENVIRONMENT=Development
 ```
 
-#### 3. Iniciar o projeto
+#### 3. Iniciar containers Docker
+
+Antes de iniciar a aplicação, é necessário subir os serviços definidos no compose.yml.
+
+```
+docker compose up -d
+```
+
+#### 4. Iniciar o Projeto
 
 ```
 dotnet run
@@ -126,14 +179,13 @@ dotnet run
 Após a inicialização, a API estará disponível em: http://localhost:5070  
 A documentação interativa (Swagger UI) pode ser acessada em: http://localhost:5070/scalar
 
-### 4. Execução de Testes
+### 5. Execução de Testes
 
 Para rodar todos os testes automatizados do projeto:
 
 ``` bash
 dotnet test
 ```
-
 
 ## Stack Tecnológica
 
