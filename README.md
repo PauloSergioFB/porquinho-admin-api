@@ -55,79 +55,79 @@ GET    /health/database   Verifica a conectividade com o banco de dados
 ### Usuários
 
 ```
-GET    /api/v1/users              Lista todos os usuários [PROTEGIDO]  
-GET    /api/v1/users/{id}         Retorna um usuário específico [PROTEGIDO]  
-POST   /api/v1/users              Cadastra um novo usuário  
-PUT    /api/v1/users/{id}         Atualiza informações de um usuário [PROTEGIDO]  
-PATCH  /api/v1/users/{id}         Atualiza parcialmente os dados [PROTEGIDO]  
-DELETE /api/v1/users/{id}         Exclui um usuário [PROTEGIDO]  
+GET    /users              Lista todos os usuários [PROTEGIDO]  
+GET    /users/{id}         Retorna um usuário específico [PROTEGIDO]  
+POST   /users              Cadastra um novo usuário  
+PUT    /users/{id}         Atualiza informações de um usuário [PROTEGIDO]  
+PATCH  /users/{id}         Atualiza parcialmente os dados [PROTEGIDO]  
+DELETE /users/{id}         Exclui um usuário [PROTEGIDO]  
 ```
 
 ### Assinaturas [PROTEGIDO]
 
 ```
-GET    /api/v1/subscriptions              Lista todas as assinaturas  
-GET    /api/v1/subscriptions/{id}         Retorna uma assinatura específica  
-POST   /api/v1/subscriptions              Cria uma nova assinatura  
-PUT    /api/v1/subscriptions/{id}         Atualiza informações da assinatura  
-PATCH  /api/v1/subscriptions/{id}         Atualiza parcialmente uma assinatura  
-DELETE /api/v1/subscriptions/{id}         Remove uma assinatura  
+GET    /subscriptions              Lista todas as assinaturas  
+GET    /subscriptions/{id}         Retorna uma assinatura específica  
+POST   /subscriptions              Cria uma nova assinatura  
+PUT    /subscriptions/{id}         Atualiza informações da assinatura  
+PATCH  /subscriptions/{id}         Atualiza parcialmente uma assinatura  
+DELETE /subscriptions/{id}         Remove uma assinatura  
 ```
 
 ### Status de Assinatura
 
 ```
-GET    /api/v1/subscription-status              Lista os status existentes  
-GET    /api/v1/subscription-status/{id}         Retorna um status específico  
-POST   /api/v1/subscription-status              Cria um novo status  
-PUT    /api/v1/subscription-status/{id}         Atualiza um status existente  
-PATCH  /api/v1/subscription-status/{id}         Atualiza parcialmente um status  
-DELETE /api/v1/subscription-status/{id}         Exclui um status  
+GET    /subscription-status              Lista os status existentes  
+GET    /subscription-status/{id}         Retorna um status específico  
+POST   /subscription-status              Cria um novo status  
+PUT    /subscription-status/{id}         Atualiza um status existente  
+PATCH  /subscription-status/{id}         Atualiza parcialmente um status  
+DELETE /subscription-status/{id}         Exclui um status  
 ```
 
 ### Tiers de Assinatura
 
 ```
-GET    /api/v1/subscription-tiers              Lista os tiers de assinatura  
-GET    /api/v1/subscription-tiers/{id}         Retorna um tier específico  
-POST   /api/v1/subscription-tiers              Cria um novo tier  
-PUT    /api/v1/subscription-tiers/{id}         Atualiza um tier existente  
-PATCH  /api/v1/subscription-tiers/{id}         Atualiza parcialmente um tier  
-DELETE /api/v1/subscription-tiers/{id}         Remove um tier  
+GET    /subscription-tiers              Lista os tiers de assinatura  
+GET    /subscription-tiers/{id}         Retorna um tier específico  
+POST   /subscription-tiers              Cria um novo tier  
+PUT    /subscription-tiers/{id}         Atualiza um tier existente  
+PATCH  /subscription-tiers/{id}         Atualiza parcialmente um tier  
+DELETE /subscription-tiers/{id}         Remove um tier  
 ```
 
 ### Funcionalidades
 
 ```
-GET    /api/v1/functionalities              Lista todas as funcionalidades disponíveis  
-GET    /api/v1/functionalities/{id}         Retorna uma funcionalidade específica  
-POST   /api/v1/functionalities              Cria uma nova funcionalidade  
-PUT    /api/v1/functionalities/{id}         Atualiza uma funcionalidade existente  
-PATCH  /api/v1/functionalities/{id}         Atualiza parcialmente uma funcionalidade  
-DELETE /api/v1/functionalities/{id}         Exclui uma funcionalidade  
+GET    /functionalities              Lista todas as funcionalidades disponíveis  
+GET    /functionalities/{id}         Retorna uma funcionalidade específica  
+POST   /functionalities              Cria uma nova funcionalidade  
+PUT    /functionalities/{id}         Atualiza uma funcionalidade existente  
+PATCH  /functionalities/{id}         Atualiza parcialmente uma funcionalidade  
+DELETE /functionalities/{id}         Exclui uma funcionalidade  
 ```
 
 ### Transações (NoSQL) [PROTEGIDO]
 
 ```
-GET    /api/v1/transactions                Lista todas as transações registradas
-GET    /api/v1/transactions/{id}           Retorna os dados de uma transação específica
-POST   /api/v1/transactions                Registra uma nova transação
-PUT    /api/v1/transactions/{id}           Atualiza completamente uma transação existente
-PATCH  /api/v1/transactions/{id}           Atualiza parcialmente os dados de uma transação
-DELETE /api/v1/transactions/{id}           Remove uma transação do sistema
-POST   /api/v1/transactions/import         Importa as transações do banco de dados relacional para o NoSQL
+GET    /transactions                Lista todas as transações registradas
+GET    /transactions/{id}           Retorna os dados de uma transação específica
+POST   /transactions                Registra uma nova transação
+PUT    /transactions/{id}           Atualiza completamente uma transação existente
+PATCH  /transactions/{id}           Atualiza parcialmente os dados de uma transação
+DELETE /transactions/{id}           Remove uma transação do sistema
+POST   /transactions/import         Importa as transações do banco de dados relacional para o NoSQL
 ```
 
 ### Logs (NoSQL) [PROTEGIDO]
 
 ```
-GET    /api/v1/logs              Lista todos os logs registrados pela aplicação
-GET    /api/v1/logs/{id}         Retorna os dados de um log específico
-POST   /api/v1/logs              Cria um novo registro de log
-PUT    /api/v1/logs/{id}         Atualiza completamente um log existente
-PATCH  /api/v1/logs/{id}         Atualiza parcialmente os dados de um log
-DELETE /api/v1/logs/{id}         Remove um log
+GET    /logs              Lista todos os logs registrados pela aplicação
+GET    /logs/{id}         Retorna os dados de um log específico
+POST   /logs              Cria um novo registro de log
+PUT    /logs/{id}         Atualiza completamente um log existente
+PATCH  /logs/{id}         Atualiza parcialmente os dados de um log
+DELETE /logs/{id}         Remove um log
 ```
 
 ## Setup do Projeto
